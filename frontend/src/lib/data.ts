@@ -200,9 +200,11 @@ export const formatCurrency = (amount: number): string => {
   }).format(amount);
 };
 
-/** Parse a YYYY-MM-DD string safely without timezone shift */
+/** Parse a YYYY-MM-DD or ISO string safely without timezone shift */
 function parseLocalDate(dateStr: string): Date {
-  const [y, m, d] = dateStr.split("-").map(Number);
+  if (!dateStr) return new Date();
+  const cleanDate = dateStr.includes("T") ? dateStr.split("T")[0] : dateStr;
+  const [y, m, d] = cleanDate.split("-").map(Number);
   return new Date(y, m - 1, d);
 }
 
