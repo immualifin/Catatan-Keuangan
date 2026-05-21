@@ -52,17 +52,6 @@ export function Sidebar({ onClose }: SidebarProps) {
             <p className="text-xs text-muted-foreground">Kelola keuanganmu</p>
           </div>
         </Link>
-        {onClose && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="lg:hidden"
-            id="sidebar-close-btn"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        )}
       </div>
 
       <Separator className="mx-4 opacity-50" />
