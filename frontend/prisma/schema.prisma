@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  currency     String        @default("IDR")
+  created_at   DateTime?
+  updated_at   DateTime?
+  categories   Category[]
+  transactions Transaction[]
+  receipts     Receipt[]
+
+  @@map("users")
+}
+
+model Category {
+  id           Int           @id @default(autoincrement())
+  user_id      Int
+  name         String
+  type         String
+  color        String?
+  icon         String?
+  created_at   DateTime?
+  updated_at   DateTime?
+  user         User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([user_id])
+  @@map("categories")
+}
+
+model Transaction {
+  id               Int       @id @default(autoincrement())
+  user_id          Int
+  category_id      Int
+  receipt_id       Int?
+  type             String
+  amount           Decimal   @db.Decimal(15, 2)
+  description      String?   @db.Text
+  transaction_date DateTime  @db.Date
+  source           String    @default("manual")
+  created_at       DateTime?
+  updated_at       DateTime?
+  user             User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category         Category  @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  receipt          Receipt?  @relation(fields: [receipt_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id])
+  @@index([category_id])
+  @@index([receipt_id])
+  @@map("transactions")
+}
+
+model Receipt {
+  id           Int           @id @default(autoincrement())
+  user_id      Int
+  image_path   String
+  raw_ocr_text String?       @db.Text
+  parsed_json  Json?
+  status       String        @default("pending")
+  store_name   String?
+  receipt_date DateTime?     @db.Date
+  total_amount Decimal?      @db.Decimal(15, 2)
+  created_at   DateTime?
+  updated_at   DateTime?
+  user         User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  items        ReceiptItem[]
+
+  @@index([user_id])
+  @@map("receipts")
+}
+
+model ReceiptItem {
+  id         Int       @id @default(autoincrement())
+  receipt_id Int
+  name       String
+  quantity   Int
+  price      Decimal   @db.Decimal(15, 2)
+  subtotal   Decimal   @db.Decimal(15, 2)
+  created_at DateTime?
+  updated_at DateTime?
+  receipt    Receipt   @relation(fields: [receipt_id], references: [id], onDelete: Cascade)
+
+  @@index([receipt_id])
+  @@map("receipt_items")
+}
