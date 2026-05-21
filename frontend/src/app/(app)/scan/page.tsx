@@ -40,6 +40,7 @@ export default function ScanPage() {
   const [receiptId, setReceiptId] = useState<number | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [editedItems, setEditedItems] = useState<ParsedReceipt['items']>([]);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [editedStoreName, setEditedStoreName] = useState("");
   const [editedDate, setEditedDate] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -84,9 +85,11 @@ export default function ScanPage() {
       setEditedStoreName(parsedData.store_name ?? "");
       setEditedDate(parsedData.receipt_date ?? "");
       toast.success("Struk berhasil diparsing!");
-    } catch (error) {
+    } catch (error: any) {
       setStatus("error");
-      toast.error("Gagal memproses struk. Pastikan foto jelas dan coba lagi.");
+      const msg = error?.response?.data?.message || "Gagal memproses struk. Pastikan foto jelas dan coba lagi.";
+      toast.error(msg);
+      setErrorMsg(msg);
     }
   }, []);
 
@@ -456,7 +459,7 @@ export default function ScanPage() {
             <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-3" />
             <p className="font-semibold">Gagal memproses struk</p>
             <p className="text-sm text-muted-foreground mt-1 mb-4">
-              Foto tidak terbaca dengan baik. Coba foto ulang dengan pencahayaan yang lebih baik.
+              {errorMsg || "Foto tidak terbaca dengan baik. Coba foto ulang dengan pencahayaan yang lebih baik."}
             </p>
             <div className="flex gap-3 justify-center">
               <Button variant="outline" onClick={handleReset} id="btn-retry-scan">Coba Lagi</Button>
