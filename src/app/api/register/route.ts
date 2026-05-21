@@ -29,6 +29,16 @@ export async function POST(req: Request) {
         password: hashedPassword,
         created_at: new Date(),
         updated_at: new Date(),
+        categories: {
+          create: [
+            { name: "Gaji", type: "income", color: "#10b981", icon: "💰", created_at: new Date(), updated_at: new Date() },
+            { name: "Makanan", type: "expense", color: "#f43f5e", icon: "🍔", created_at: new Date(), updated_at: new Date() },
+            { name: "Transportasi", type: "expense", color: "#3b82f6", icon: "🚗", created_at: new Date(), updated_at: new Date() },
+            { name: "Belanja", type: "expense", color: "#a855f7", icon: "🛒", created_at: new Date(), updated_at: new Date() },
+            { name: "Tagihan", type: "expense", color: "#f59e0b", icon: "📄", created_at: new Date(), updated_at: new Date() },
+            { name: "Hiburan", type: "expense", color: "#ec4899", icon: "🎬", created_at: new Date(), updated_at: new Date() }
+          ]
+        }
       },
     });
 
