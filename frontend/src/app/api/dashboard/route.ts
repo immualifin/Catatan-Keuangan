@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     let currentMonthIncome = 0;
     let currentMonthExpense = 0;
     
-    const categoryTotals: Record<string, number> = {};
+    const categoryTotals: Record<number, { categoryId: number, categoryName: string, color: string, total: number }> = {};
 
     monthTransactions.forEach(tx => {
       const amount = Number(tx.amount);
@@ -40,15 +40,20 @@ export async function GET(req: NextRequest) {
         currentMonthExpense += amount;
         
         // Expense breakdown
+        const catId = tx.category_id || 0;
         const catName = tx.category?.name || "Lainnya";
-        categoryTotals[catName] = (categoryTotals[catName] || 0) + amount;
+        const catColor = tx.category?.color || "#888888";
+        
+        if (!categoryTotals[catId]) {
+          categoryTotals[catId] = { categoryId: catId, categoryName: catName, color: catColor, total: 0 };
+        }
+        categoryTotals[catId].total += amount;
       }
     });
 
-    const categoryBreakdown = Object.entries(categoryTotals).map(([name, total]) => ({
-      name,
-      total,
-      percentage: currentMonthExpense > 0 ? (total / currentMonthExpense) * 100 : 0
+    const categoryBreakdown = Object.values(categoryTotals).map(cat => ({
+      ...cat,
+      percentage: currentMonthExpense > 0 ? (cat.total / currentMonthExpense) * 100 : 0
     })).sort((a, b) => b.total - a.total);
 
     const netBalance = currentMonthIncome - currentMonthExpense;
