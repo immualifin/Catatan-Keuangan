@@ -1,0 +1,24 @@
+# ─── Root level ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+
+# ─── Backend (Laravel) ────────────────────────────────────────────────────────
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/vendor/
+backend/node_modules/
+backend/storage/app/public/receipts/
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+backend/public/hot
+backend/public/storage
+
+# ─── Frontend (Next.js) ───────────────────────────────────────────────────────
+frontend/.env.local
+frontend/.env*.local
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
